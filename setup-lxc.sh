@@ -231,7 +231,7 @@ set -euo pipefail
 
 export DEBIAN_FRONTEND=noninteractive
 apt-get update -qq
-apt-get install -y -qq curl ca-certificates build-essential python3
+apt-get install -y -qq curl ca-certificates build-essential python3 openssh-client sudo sqlite3
 
 # Node.js via NodeSource
 curl -fsSL "https://deb.nodesource.com/setup_${NODE_MAJOR}.x" | bash - >/dev/null
@@ -299,6 +299,9 @@ bash /opt/kindred/scripts/setup-auth.sh >/dev/null 2>&1 || true
 # Sudoers whitelist: lets the kindred Next.js process invoke the privileged
 # backup-config helper. The helper validates its input file (path under
 # /tmp, owned by kindred, JSON schema) before touching /etc/kindred/*.
+# `sudo` is installed above; ensure /etc/sudoers.d exists just in case (it
+# comes with the sudo package on Debian).
+install -d -m 0750 -o root -g root /etc/sudoers.d
 cat > /etc/sudoers.d/kindred-configure-backup <<'SUDOERS'
 kindred ALL=(root) NOPASSWD: /usr/bin/node /opt/kindred/scripts/configure-backup-privileged.js
 SUDOERS
