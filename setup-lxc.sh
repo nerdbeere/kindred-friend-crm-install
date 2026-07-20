@@ -137,7 +137,9 @@ if [ "$USE_SSH" -eq 1 ]; then
 set -euo pipefail
 export DEBIAN_FRONTEND=noninteractive
 apt-get update -qq
-apt-get install -y -qq openssh-client
+# git + openssh-client are needed here so the host-side deploy-key verification
+# (git ls-remote) can run before the main provisioning step installs anything else.
+apt-get install -y -qq openssh-client git
 
 id kindred >/dev/null 2>&1 || useradd --system --shell /usr/sbin/nologin --create-home kindred
 install -d -m 700 -o kindred -g kindred /home/kindred/.ssh
@@ -229,7 +231,7 @@ set -euo pipefail
 
 export DEBIAN_FRONTEND=noninteractive
 apt-get update -qq
-apt-get install -y -qq curl ca-certificates git build-essential python3 openssh-client
+apt-get install -y -qq curl ca-certificates build-essential python3
 
 # Node.js via NodeSource
 curl -fsSL "https://deb.nodesource.com/setup_${NODE_MAJOR}.x" | bash - >/dev/null
