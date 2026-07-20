@@ -5,7 +5,9 @@
 # Run as root ON THE PROXMOX HOST:
 #   ./update-lxc.sh <CT_ID>
 #
-# Thin wrapper around scripts/update.sh running inside the container.
+# Thin wrapper around scripts/update.sh running inside the container. The
+# in-CT script also repairs auth + backup sudoers prerequisites, so this is
+# the supported repair command for partial/older provisions.
 
 set -euo pipefail
 

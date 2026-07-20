@@ -259,8 +259,12 @@ as_app_user "npm run build"
 # boot runs without it and every cookie-signing request (setup wizard,
 # login) fails with a 500 until the next restart. This was the "setup
 # failed" bug on fresh installs.
-bash /opt/kindred/scripts/setup-auth.sh || echo "WARN: setup-auth.sh failed — auth will not work until it is fixed" >&2
-bash /opt/kindred/scripts/install-backup-prereqs.sh || echo "WARN: backup prereqs install failed — run manually later" >&2
+# These are non-optional: setup cannot work without AUTH_SECRET, and the
+# admin UI cannot enable backups without this exact sudoers rule. Do NOT
+# turn failures into warnings — a half-provisioned CT that looks ready is
+# worse than an installer that stops with a useful error.
+bash /opt/kindred/scripts/setup-auth.sh
+bash /opt/kindred/scripts/install-backup-prereqs.sh
 
 cat > /etc/systemd/system/kindred.service <<UNIT_EOF
 [Unit]
